@@ -1,54 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Intel360 Synaptix</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Document Analysis</title>
 </head>
 <body>
-    <h1>Intel360 Synaptix</h1>
-    
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="pdfFile" name="pdfFile">
-        <button type="button" onclick="uploadPDF()">Upload PDF</button>
+    <h2>Upload a PDF</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="pdf_file" required>
+        <button type="submit">Upload PDF</button>
     </form>
+    
+    <br><button onclick="window.location.href='/parsed?text=' + encodeURIComponent(localStorage.getItem('parsedText') || '')">View Parsed Text</button>
 
-    <button onclick="getSummary()">Get Summary</button>
-    <button onclick="getTrends()">Analyze Trends</button>
-
-    <h3>Extracted Text:</h3>
-    <p id="extractedText"></p>
-
-    <h3>Summary:</h3>
+    <h2>Summarization</h2>
+    <button onclick="fetchSummary()">Get Summary</button>
     <p id="summary"></p>
-
-    <h3>Emerging Trends:</h3>
+    
+    <h2>Ask a Question</h2>
+    <input type="text" id="question" placeholder="Enter your question here">
+    <button onclick="fetchAnswer()">Ask Question</button>
+    <p id="answer"></p>
+    
+    <h2>Emerging Trends</h2>
+    <button onclick="fetchTrends()">Get Trends</button>
     <p id="trends"></p>
-
+    
     <script>
-        function uploadPDF() {
-            let formData = new FormData();
-            formData.append("pdfFile", document.getElementById("pdfFile").files[0]);
-
-            fetch('/upload', { method: 'POST', body: formData })
-                .then(response => response.json())
-                .then(data => { 
-                    if (data.text) document.getElementById("extractedText").innerText = data.text;
-                    else alert(data.error);
-                });
+        function fetchSummary() {
+            fetch('/summary')
+                .then(response => response.text())
+                .then(data => document.getElementById('summary').innerText = data);
         }
-
-        function getSummary() {
-            let text = document.getElementById("extractedText").innerText;
-
-            fetch('/summarize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) })
-                .then(response => response.json())
-                .then(data => document.getElementById("summary").innerText = data.summary);
+        
+        function fetchAnswer() {
+            let question = document.getElementById('question').value;
+            fetch('/ask', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question: question})
+            })
+            .then(response => response.text())
+            .then(data => document.getElementById('answer').innerText = data);
         }
-
-        function getTrends() {
-            fetch('/trends', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => document.getElementById("trends").innerText = data.trends);
+        
+        function fetchTrends() {
+            fetch('/trends')
+                .then(response => response.text())
+                .then(data => document.getElementById('trends').innerText = data);
         }
     </script>
 </body>

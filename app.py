@@ -12,8 +12,7 @@ def upload():
     if file:
         text = "Extracted text from PDF (to be implemented)"
         return jsonify({"text": text})
-    else:
-        return jsonify({"error": "No file uploaded"})
+    return jsonify({"error": "No file uploaded"})
 
 @app.route('/summarize', methods=['POST'])
 def summarize():
@@ -31,6 +30,13 @@ def qa():
 def trends():
     trends = "Trends (to be fetched from DeepSeek)"
     return jsonify({"trends": trends})
+
+@app.route('/parsed')
+def parsed():
+    text = request.args.get('text', '')
+    if not text:
+        text = "No extracted text available."
+    return render_template('parsed.html', text=text)
 
 if __name__ == '__main__':
     app.run(debug=True)
