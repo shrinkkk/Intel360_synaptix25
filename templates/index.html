@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Intel360 Synaptix</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Intel360 Synaptix</h1>
+    
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="pdfFile" name="pdfFile">
+        <button type="button" onclick="uploadPDF()">Upload PDF</button>
+    </form>
+
+    <button onclick="getSummary()">Get Summary</button>
+    <button onclick="getTrends()">Analyze Trends</button>
+
+    <h3>Extracted Text:</h3>
+    <p id="extractedText"></p>
+
+    <h3>Summary:</h3>
+    <p id="summary"></p>
+
+    <h3>Emerging Trends:</h3>
+    <p id="trends"></p>
+
+    <script>
+        function uploadPDF() {
+            let formData = new FormData();
+            formData.append("pdfFile", document.getElementById("pdfFile").files[0]);
+
+            fetch('/upload', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => { 
+                    if (data.text) document.getElementById("extractedText").innerText = data.text;
+                    else alert(data.error);
+                });
+        }
+
+        function getSummary() {
+            let text = document.getElementById("extractedText").innerText;
+
+            fetch('/summarize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) })
+                .then(response => response.json())
+                .then(data => document.getElementById("summary").innerText = data.summary);
+        }
+
+        function getTrends() {
+            fetch('/trends', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => document.getElementById("trends").innerText = data.trends);
+        }
+    </script>
+</body>
+</html>
