@@ -1,2 +1,3 @@
 # Intel360_synaptix25
-Problem Statement: Develop a platform that can parse, summarize, extract key insights and identify trends from competitor related documents. 
+Problem Statement: 
+Intel360 – AI-Driven Competitor Analysis: Develop a platform that processes and analyzes competitor-related documents such as financial reports, market research papers, and business strategy documents in PDF format. The system must leverage Generative AI to extract key insights, summarize findings, and identify emerging trends in competitor strategies. Key functionalities should include document parsing, AI-driven summarization, and entity recognition to highlight crucial aspects such as market positioning, strengths, weaknesses, and business opportunities.
